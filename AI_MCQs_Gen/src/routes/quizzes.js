@@ -23,7 +23,7 @@ router.post('/generate', async (req, res) => {
 
   let questions = null;
   try {
-    const resp = await axios.post('https://api.a0.dev/ai/llm', {
+    const resp = await axios.post(process.env.AI_MODEL, {
       messages: [
         { role: 'system', content: 'You are a quiz generator that only outputs valid JSON arrays of quiz questions.' },
         { role: 'user', content: prompt }

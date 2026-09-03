@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import axiosInstance from '../../api/axios.js';
 
 const TeacherResultsPage = () => {
@@ -10,6 +11,7 @@ const TeacherResultsPage = () => {
     const [loading, setLoading] = useState(true);
     const [results, setResults] = useState([]);
     const [error, setError] = useState('');
+    const [deleteLoading, setDeleteLoading] = useState(null);
 
     const fetchAll = async () => {
         setLoading(true);
@@ -21,6 +23,22 @@ const TeacherResultsPage = () => {
             setError(err.response?.data?.message || 'Failed to load results');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDelete = async (publicId) => {
+        if (!window.confirm('Are you sure you want to delete this result?')) return;
+
+        const toastId = toast.loading('Deleting result...');
+        setDeleteLoading(publicId);
+        try {
+            await axiosInstance.delete(`/teacher/delete-result/${encodeURIComponent(publicId)}`);
+            toast.success('Result deleted successfully!', { id: toastId });
+            await fetchAll();
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to delete result', { id: toastId });
+        } finally {
+            setDeleteLoading(null);
         }
     };
 
@@ -39,6 +57,7 @@ const TeacherResultsPage = () => {
 
     const submitUpload = async (e) => {
         e.preventDefault();
+        const toastId = toast.loading('Uploading result image...');
         setUploadLoading(true);
         setUploadError('');
         setUploadResult(null);
@@ -49,14 +68,17 @@ const TeacherResultsPage = () => {
             formData.append('testName', uploadForm.testName.trim());
             formData.append('image', uploadForm.file);
 
-            const res = await axiosInstance.post('/teacher/upload-result', formData, {
+            await axiosInstance.post('/teacher/upload-result', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setUploadResult(res.data);
+            setUploadResult();
             setUploadForm({ className: '', testName: '', file: null });
+            toast.success('Result uploaded successfully!', { id: toastId });
             await fetchAll();
         } catch (err) {
-            setUploadError(err.response?.data?.message || 'Upload failed');
+            const errorMsg = err.response?.data?.message || 'Upload failed';
+            setUploadError(errorMsg);
+            toast.error(errorMsg, { id: toastId });
         } finally {
             setUploadLoading(false);
         }
@@ -64,15 +86,15 @@ const TeacherResultsPage = () => {
 
     return (
         <div className="space-y-8">
-            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-sky-500 bg-clip-text text-transparent">
                 Results
             </h1>
 
-            <div className="bg-indigo-950/50 backdrop-blur-md rounded-2xl border border-cyan-400/30 p-6">
-                <h2 className="text-2xl font-semibold text-cyan-300 mb-4">Upload Result Image</h2>
+            <div className="bg-blue-950/50 backdrop-blur-md rounded-2xl border border-blue-400/30 p-6">
+                <h2 className="text-2xl font-semibold text-blue-300 mb-4">Upload Result Image</h2>
 
                 {uploadError && (
-                    <div className="p-3 mb-4 text-sm text-red-300 bg-red-900/30 rounded-2xl border border-red-500/30">
+                    <div className="p-3 mb-4 text-sm text-red-300 bg-red-900/30 rounded-2xl border border-red-500/30" role="alert" aria-live="assertive">
                         {uploadError}
                     </div>
                 )}
@@ -84,6 +106,8 @@ const TeacherResultsPage = () => {
                         onChange={handleUploadChange}
                         className="input-style w-full"
                         placeholder="Class (e.g. 11)"
+                        aria-label="Class Name"
+                        aria-required="true"
                         required
                     />
                     <input
@@ -92,6 +116,8 @@ const TeacherResultsPage = () => {
                         onChange={handleUploadChange}
                         className="input-style w-full"
                         placeholder="Test Name"
+                        aria-label="Test Name"
+                        aria-required="true"
                         required
                     />
                     <input
@@ -100,6 +126,8 @@ const TeacherResultsPage = () => {
                         accept="image/*"
                         onChange={handleUploadChange}
                         className="input-style w-full"
+                        aria-label="Upload Result Image"
+                        aria-required="true"
                         required
                     />
 
@@ -107,7 +135,8 @@ const TeacherResultsPage = () => {
                         <button
                             type="submit"
                             disabled={uploadLoading || !uploadForm.file}
-                            className="w-full py-4 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-xl text-white font-bold hover:shadow-lg transition"
+                            className="w-full py-4 bg-gradient-to-r from-sky-600 to-blue-600 rounded-xl text-white font-bold hover:shadow-lg transition"
+                            aria-label={uploadLoading ? 'Uploading result...' : 'Upload result'}
                         >
                             {uploadLoading ? 'Uploading…' : 'Upload'}
                         </button>
@@ -115,42 +144,44 @@ const TeacherResultsPage = () => {
                 </form>
 
                 {uploadResult && (
-                    <pre className="mt-5 text-sm text-gray-300 bg-black/30 p-4 rounded-2xl overflow-x-auto border border-cyan-400/10">
+                    <pre className="mt-5 text-sm text-gray-300 bg-black/30 p-4 rounded-2xl overflow-x-auto border border-blue-400/10" aria-label="Upload Result Details">
                         {JSON.stringify(uploadResult, null, 2)}
                     </pre>
                 )}
             </div>
 
-            <div className="bg-indigo-950/50 backdrop-blur-md rounded-2xl border border-cyan-400/30 p-6">
+            <div className="bg-blue-950/50 backdrop-blur-md rounded-2xl border border-blue-400/30 p-6">
                 <div className="flex items-center justify-between gap-4">
-                    <h2 className="text-2xl font-semibold text-cyan-300">All Results</h2>
+                    <h2 className="text-2xl font-semibold text-blue-300">All Results</h2>
                     <button
                         onClick={fetchAll}
-                        className="py-3 px-6 rounded-2xl bg-indigo-800/60 hover:bg-indigo-800 text-white font-bold transition"
+                        className="py-3 px-6 rounded-2xl bg-blue-800/60 hover:bg-blue-800 text-white font-bold transition"
+                        aria-label="Refresh results list"
                     >
                         Refresh
                     </button>
                 </div>
 
                 {loading ? (
-                    <p className="text-white text-xl animate-pulse mt-4">Loading results…</p>
+                    <p className="text-white text-xl animate-pulse mt-4" aria-live="polite">Loading results…</p>
                 ) : error ? (
-                    <p className="text-red-300 mt-4">{error}</p>
+                    <p className="text-red-300 mt-4" role="alert" aria-live="polite">{error}</p>
                 ) : results.length === 0 ? (
-                    <p className="text-gray-300 mt-4">No results uploaded yet.</p>
+                    <p className="text-gray-300 mt-4" aria-live="polite">No results uploaded yet.</p>
                 ) : (
                     <div className="overflow-x-auto mt-4">
-                        <table className="w-full text-left border border-cyan-400/30 rounded-2xl overflow-hidden">
-                            <thead className="bg-indigo-900/50">
+                        <table className="w-full text-left border border-blue-400/30 rounded-2xl overflow-hidden" aria-label="Test Results Table">
+                            <thead className="bg-blue-900/50">
                                 <tr>
-                                    <th className="p-4 text-cyan-300">Class</th>
-                                    <th className="p-4 text-cyan-300">Test</th>
-                                    <th className="p-4 text-cyan-300">Image</th>
+                                    <th scope="col" className="p-4 text-blue-300">Class</th>
+                                    <th scope="col" className="p-4 text-blue-300">Test</th>
+                                    <th scope="col" className="p-4 text-blue-300">Image</th>
+                                    <th scope="col" className="p-4 text-blue-300">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {results.map(r => (
-                                    <tr key={r._id} className="border-t border-cyan-400/20">
+                                    <tr key={r._id} className="border-t border-blue-400/20">
                                         <td className="p-4 text-white">{r.className}</td>
                                         <td className="p-4 text-gray-200">{r.testName}</td>
                                         <td className="p-4">
@@ -158,10 +189,21 @@ const TeacherResultsPage = () => {
                                                 href={r.imageUrl}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="text-cyan-300 hover:text-cyan-200 underline"
+                                                className="text-blue-300 hover:text-blue-200 underline"
+                                                aria-label={`Open result image for ${r.testName} class ${r.className}`}
                                             >
                                                 Open
                                             </a>
+                                        </td>
+                                        <td className="p-4">
+                                            <button
+                                                onClick={() => handleDelete(r.publicId)}
+                                                disabled={deleteLoading === r.publicId}
+                                                className="text-red-400 hover:text-red-300 font-medium transition disabled:opacity-50"
+                                                aria-label={`Delete result for ${r.testName} class ${r.className}`}
+                                            >
+                                                {deleteLoading === r.publicId ? 'Deleting...' : 'Delete'}
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

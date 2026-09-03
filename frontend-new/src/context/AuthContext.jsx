@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import toast from 'react-hot-toast';
 import axiosInstance from '../api/axios.js';
 
 const AuthContext = createContext({});
@@ -89,6 +90,7 @@ export const AuthProvider = ({ children }) => {
         try {
             // Backend ko call karein taake woh HTTP-only cookie delete kare
             await axiosInstance.get('/auth/logout');
+            toast.success('Logged out successfully');
         } catch (err) {
             console.warn("Logout request failed (Server/Cookie issue)", err);
         } finally {

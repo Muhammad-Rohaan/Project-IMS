@@ -1,7 +1,7 @@
 /* src/index.css */
 
 /* Sirf yeh teen lines rahne den.
-   Yeh Tailwind ko browser ki default styling ko reset karne aur 
+   Yeh Tailwind ko browser ki default styling ko reset karne aur
    aapke component ki classes ko theek se apply karne denge.
 */
 
@@ -9,6 +9,66 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------
+   The Fort Of Science And Commerce Education
+   Interactive Blue & White Theme
+   --------------------------------------------- */
+:root {
+  --brand-blue: #1d4ed8;      /* blue-700 */
+  --brand-blue-dark: #1e3a8a; /* blue-900 */
+  --brand-blue-light: #3b82f6;/* blue-500 */
+  --brand-sky: #0ea5e9;       /* sky-500 */
+  --brand-white: #f8fafc;     /* slate-50 */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--brand-white);
+}
+
+/* Blue & white input style */
 .input-style {
-  @apply px-6 py-4 bg-indigo-900/50 border border-cyan-400/30 rounded-xl text-white placeholder-gray-400 focus:ring-4 focus:ring-cyan-400/50 focus:border-cyan-400 outline-none transition-all backdrop-blur-sm;
+  @apply px-6 py-4 bg-white border border-blue-300 rounded-xl text-blue-950 placeholder-blue-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all;
+}
+
+/* Shared brand text (use on dark backgrounds) */
+.brand-text {
+  @apply bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent;
+}
+
+/* Shared brand page heading (use on light backgrounds) */
+.brand-heading {
+  @apply text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-blue-700 via-blue-600 to-sky-500 bg-clip-text text-transparent;
+}
+
+/* Primary interactive button */
+.btn-primary {
+  @apply bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-sky-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-blue-500/40 active:scale-95;
+}
+
+/* Dark blue sidebar/nav surface */
+.brand-nav {
+  @apply bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white;
+}
+
+/* Active sidebar item */
+.brand-nav-active {
+  @apply bg-gradient-to-r from-blue-600 to-sky-500 text-white font-semibold shadow-lg shadow-blue-500/30 border border-blue-400/50;
+}
+
+/* Inactive sidebar item */
+.brand-nav-inactive {
+  @apply text-blue-100 hover:bg-blue-800/60 hover:text-sky-300;
+}
+
+/* Simple fade-in used by pages */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
 }

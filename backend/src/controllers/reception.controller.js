@@ -7,15 +7,33 @@ import TeacherProfile from "../models/TeacherProfile.model.js";
 import ReceptionProfileModel from "../models/ReceptionProfile.model.js";
 import mongoose from "mongoose";
 
+
+// Auto-increment RollNo function
+//"className-getTotalStudentCount() + 1" | RollNo Archi = 09-01
+async function generateRollNo(className) {
+
+    const stdsCount = await StudentProfile.countDocuments(
+        {
+            className: className.toUpperCase(),
+        }
+    );
+    const nextNumber = stdsCount+1;
+
+    const newRollNo = `${className.toUpperCase()}-${nextNumber.toString()}`;
+    return newRollNo;
+
+}
+
+
 // POST /api/reception/az-students/register-student
 export const registerStudent = async (req, res) => {
     let newUser = null;
     try {
         const {
             fullName,
-            email = "temp@gmail.com",
+            email,
             password,
-            rollNo,
+            // rollNo,
             fatherName,
             fatherPhone,
             contact,
@@ -27,11 +45,12 @@ export const registerStudent = async (req, res) => {
 
         newUser = await register(null, null, { fullName, email, password, role: 'student' });
 
+        const rollNo = await generateRollNo(className);
 
         // Step 2: Create StudentProfile
         await StudentProfile.create([{
             userId: newUser._id,
-            rollNo: rollNo.toUpperCase(),
+            rollNo: rollNo,
             stdName: fullName,
             fatherName,
             fatherPhone,
@@ -195,32 +214,32 @@ export const updateStudent = async (req, res) => {
     }
 }
 
-// DELETE /api/reception/az-students/delete-student/:rollNo
-export const deleteStudent = async (req, res) => {
-    try {
-        const rollNo = req.params.rollNo.toUpperCase();
+// DELETE /api/reception/az-students/delete-student/:rollNo  // recep
+// export const deleteStudent = async (req, res) => {
+//     try {
+//         const rollNo = req.params.rollNo.toUpperCase();
 
-        const studentProfile = await StudentProfile.findOne({ rollNo });
-        if (!studentProfile) {
-            return res.status(404).json({ message: "Student not found with this Roll No." });
-        }
+//         const studentProfile = await StudentProfile.findOne({ rollNo });
+//         if (!studentProfile) {
+//             return res.status(404).json({ message: "Student not found with this Roll No." });
+//         }
 
-        // Delete StudentProfile first
-        await StudentProfile.deleteOne({ _id: studentProfile._id });
+//         // Delete StudentProfile first
+//         await StudentProfile.deleteOne({ _id: studentProfile._id });
 
-        // Then delete associated User
-        await UserModel.findByIdAndDelete(studentProfile.userId);
+//         // Then delete associated User
+//         await UserModel.findByIdAndDelete(studentProfile.userId);
 
-        res.status(200).json({
-            message: "Student deleted successfully",
-            deletedRollNo: rollNo
-        });
+//         res.status(200).json({
+//             message: "Student deleted successfully",
+//             deletedRollNo: rollNo
+//         });
 
-    } catch (error) {
-        console.error("Delete Student Error:", error);
-        res.status(500).json({
-            message: "Error deleting student",
-            error: error.message
-        });
-    }
-}
+//     } catch (error) {
+//         console.error("Delete Student Error:", error);
+//         res.status(500).json({
+//             message: "Error deleting student",
+//             error: error.message
+//         });
+//     }
+// }

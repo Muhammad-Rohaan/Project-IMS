@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // true for 465, false for 587
   auth: {
     user: process.env.GMAIL_USER || "learning82005@gmail.com",
-    pass: process.env.GMAIL_PASS || "rzla pfnb oxgf ogyg",
+    pass: process.env.GMAIL_PASS,
   },
 });
 
@@ -26,9 +26,9 @@ export const sendEmail = async (to, subject, text) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to}`);
+    // console.log(`Email sent to ${to}`);
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
-    throw error; // Let calling function handle it
+    throw error;
   }
 };

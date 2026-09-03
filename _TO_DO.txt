@@ -1,0 +1,7 @@
+_TO_DO_
+
+1. Admin approval before deleting any student from the reception desk. -> 
+2. 
+
+
+

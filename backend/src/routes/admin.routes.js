@@ -16,7 +16,7 @@ router.use(protect, authorize('admin'));
 router.get('/dashboard', (req, res) => res.json({ success: true, message: 'Welcome to the Admin Dashboard' }));
 
 
-router.post('/register-user', register);  // not good ...
+// router.post('/register-user', register);  // not good ...
 // creating reception routes
 
 router.post('/az-reception/register-receptionist', registerReceptionist);
@@ -45,8 +45,10 @@ router.put('/az-teachers/update-teacher/:teacherRegId', updateTeacher);
 
 router.delete('/az-teachers/delete-teacher/:teacherRegId', deleteTeacherById);
 
+// delete student route...
 
 
-router.get('/finances', (req, res) => res.json({ success: true, message: 'Financial reports endpoint' }));
+
+router.get('/finances', (req, res) => res.json({ message: 'Financial reports endpoint COMMING SOOOOOOOOOOOON' }));
 
 export default router;

@@ -1,6 +1,6 @@
 import express from 'express';
 import { protect, authorize } from '../middleware/auth.middleware.js';
-import { registerStudent, fetchAllStudents, fetchStudentByRollNo, fetchStudentsByClass, updateStudent, deleteStudent } from '../controllers/reception.controller.js';   
+import { registerStudent, fetchAllStudents, fetchStudentByRollNo, fetchStudentsByClass, updateStudent } from '../controllers/reception.controller.js';   
 // import { collectFee } from '../controllers/fees.controller.js';
 
 // Example: import { createStudentProfile, collectFee, handleInquiry } from '../controllers/reception.controller.js';
@@ -27,7 +27,7 @@ router.get('/az-students/fetch-students-by-class/:className', fetchStudentsByCla
 
 router.put('/az-students/update-student/:rollNo', updateStudent);
 
-router.delete('/az-students/delete-student/:rollNo', deleteStudent);
+// router.delete('/az-students/delete-student/:rollNo', authorize('admin'), deleteStudent);  // ***Reception has no authurity for this ***
 
 
 

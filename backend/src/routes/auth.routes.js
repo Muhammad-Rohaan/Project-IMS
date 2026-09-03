@@ -12,7 +12,7 @@ export default router;
 */
 
 import express from 'express';
-import { register, login, logout } from '../controllers/auth.controller.js';
+import { register, login, logout, changePassword } from '../controllers/auth.controller.js';
 import { protect, authorize } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
@@ -25,5 +25,8 @@ router.get('/logout', protect, logout); // Protect lagana zaroori hai.
 
 // // This route is protected and only accessible by users with the 'admin' role.
 // router.get('/dashboard', protect, authorize('admin'));
+
+// === NEW ROUTE ===
+router.put('/change-password', protect, changePassword);   // or router.post()
 
 export default router;

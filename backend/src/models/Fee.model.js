@@ -1,4 +1,3 @@
-import e from 'express';
 import mongoose from 'mongoose';
 
 const feeSchema = new mongoose.Schema({
@@ -41,7 +40,7 @@ const feeSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['paid', 'pending'],
+        enum: ['paid', 'pending', 'unpaid'],
         default: 'pending'
     },
     collectedBy: String, // receptionist name

@@ -35,10 +35,10 @@ const SetupFirstAdmin = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-4">
-            <div className="w-full max-w-lg p-10 space-y-8 bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-cyan-400/20">
+        <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4">
+            <div className="w-full max-w-lg p-10 space-y-8 bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-400/20">
                 <div className="text-center space-y-2">
-                    <h1 className="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-extrabold bg-gradient-to-r from-blue-400 via-sky-500 to-pink-500 bg-clip-text text-transparent">
                         Setup First Admin
                     </h1>
                     <p className="text-sm text-gray-300">
@@ -53,7 +53,7 @@ const SetupFirstAdmin = () => {
                 )}
 
                 {result && (
-                    <pre className="text-sm text-gray-300 bg-black/30 p-4 rounded-2xl overflow-x-auto border border-cyan-400/10">
+                    <pre className="text-sm text-gray-300 bg-black/30 p-4 rounded-2xl overflow-x-auto border border-blue-400/10">
                         {JSON.stringify(result, null, 2)}
                     </pre>
                 )}
@@ -90,7 +90,7 @@ const SetupFirstAdmin = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 px-6 text-lg font-semibold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 shadow-2xl transition-all duration-300"
+                        className="w-full py-4 px-6 text-lg font-semibold rounded-2xl text-white bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 shadow-2xl transition-all duration-300"
                     >
                         {loading ? 'Creating…' : 'Create Admin'}
                     </button>

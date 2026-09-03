@@ -387,7 +387,6 @@ export const deleteTeacherById = async (req, res) => {
     }
 }
 
-
 export const getAllStds = async (req, res) => {
     try {
 
@@ -399,13 +398,42 @@ export const getAllStds = async (req, res) => {
             getStds
         })
 
-
-        
     } catch (error) {
         res.status(500).json({
             msg: "Error in finding students in admin",
             error
         });
         
+    }
+}
+
+
+// Admin will de-register the student entity not by the reception desk
+export const deleteStudent = async (req, res) => {
+    try {
+        const rollNo = req.params.rollNo.toUpperCase();
+
+        const studentProfile = await StudentProfile.findOne({ rollNo });
+        if (!studentProfile) {
+            return res.status(404).json({ message: "Student not found with this Roll No." });
+        }
+
+        // Delete StudentProfile first
+        await StudentProfile.deleteOne({ _id: studentProfile._id });
+
+        // Then delete associated User
+        await UserModel.findByIdAndDelete(studentProfile.userId);
+
+        res.status(200).json({
+            message: "Student deleted successfully",
+            deletedRollNo: rollNo
+        });
+
+    } catch (error) {
+        console.error("Delete Student Error:", error);
+        res.status(500).json({
+            message: "Error deleting student",
+            error: error.message
+        });
     }
 }

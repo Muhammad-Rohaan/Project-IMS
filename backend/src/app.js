@@ -15,6 +15,10 @@ import studentRoutes from "./routes/student.routes.js";
 import receptionRoutes from "./routes/reception.routes.js";
 import feeRoutes from "./routes/fee.routes.js"
 import attendanceRoutes from "./routes/attendance.routes.js"
+import announcementRoutes from "./routes/announcement.routes.js"
+// import n8nRoutes from "./routes/n8n.routes.js"
+import { registerStudent } from "./controllers/reception.controller.js";
+import { changeFeeStatusToUnpaid, getAllPendingFees, getStudentsFeeData } from "./controllers/fees.controller.js";
 
 dotenv.config();
 
@@ -24,8 +28,20 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middlewares
+// CORS: allow the dev origin and the deployed frontend. Configure via
+// CLIENT_URL env var; multiple origins can be comma-separated.
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+    .split(",")
+    .map(o => o.trim());
+
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+        // allow requests with no origin (curl, Postman, same-origin)
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true
 }));
 app.use(express.json());
@@ -76,6 +92,22 @@ app.use("/api/student", studentRoutes);
 app.use("/api/reception", receptionRoutes);
 app.use("/api/reception/attendance", attendanceRoutes);
 app.use("/api/reception/fees", feeRoutes);
+
+app.use("/api/announcement", announcementRoutes)
+
+
+// ----------------------------------------------------------
+// For n8n automation:
+
+app.post('/n8n/register-student', registerStudent);
+app.get('/n8n/fetch-fee-records', getAllPendingFees);
+app.post('/n8n/fee-status-unpaid', changeFeeStatusToUnpaid);
+app.get('/n8n/get-stdfees-details', getStudentsFeeData);
+
+
+
+
+// ----------------------------------------------------------
 
 
 app.listen(port, () => {

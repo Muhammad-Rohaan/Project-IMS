@@ -9,7 +9,7 @@ const Unauthorized = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br 
-         from-slate-900 via-indigo-950 to-slate-900 p-4">
+         from-slate-900 via-blue-950 to-slate-900 p-4">
             <div className="text-center p-12 bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl 
                 border border-red-500/30 max-w-lg">
                 <h1 className="text-6xl font-extrabold bg-gradient-to-r from-red-500 to-pink-500 

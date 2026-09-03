@@ -6,13 +6,9 @@ import { AuthProvider } from './context/AuthContext.jsx'; // Context Provider
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    {/* Zaroori: BrowserRouter sabse upar hona chahiye */}
-    <BrowserRouter>
-      {/* Zaroori: AuthProvider, App ko wrap karna chahiye */}
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </BrowserRouter>,
 );

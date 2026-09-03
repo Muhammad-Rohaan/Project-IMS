@@ -51,7 +51,7 @@ export const markAttendance = async (req, res) => {
 
         const user = await UserModel.findById(stdUserId);
 
-        console.log(user.email);
+        // console.log(user.email);
 
 
 

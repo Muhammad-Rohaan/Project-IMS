@@ -23,6 +23,21 @@ services:
     ports:
       - "5000:5000"
 
+  ai:
+    build: ./AI_MCQs_Gen
+    container_name: mcqs_generator
+    restart: unless-stopped
+    env_file:
+      - ./AI_MCQs_Gen/.env
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - MONGO_URI=mongodb://mongo:27017/AZ_MCQsDB
+    depends_on:
+      - mongo
+    ports:
+      - "8000:8000"
+
   frontend:
     build: ./frontend-new
     container_name: irp-frontend
@@ -31,6 +46,7 @@ services:
       - backend
     ports:
       - "5173:5173"
+
 
 volumes:
   mongo_data:

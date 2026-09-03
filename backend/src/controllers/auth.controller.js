@@ -84,7 +84,7 @@ export const register = async (req, res, helperData) => {
     const isRouteHandler = req && req.body;
 
     try {
-        
+
         const userData = isRouteHandler ? req.body : helperData;
         const { fullName, email, password, role } = userData;
 
@@ -110,7 +110,7 @@ export const register = async (req, res, helperData) => {
             });
         }
 
-        return newUser; 
+        return newUser;
 
     } catch (error) {
         console.error("Registration Error:", error);
@@ -184,6 +184,9 @@ export const login = async (req, res) => {
                 } else if (user.role === 'teacher') {
                     // If the user is a teacher, we need to fetch their full profile
                     profile = await TeacherProfile.findOne({ userId: user._id });
+                } else if (user.role === 'student') {
+                    // If the user is a student, we need to fetch their full profile
+                    profile = await StudentProfile.findOne({ userId: user._id });
                 }
             }
         }
@@ -214,12 +217,12 @@ export const login = async (req, res) => {
         // 2. Response: Token ko Cookie mein daalo aur User ka data JSON body mein bhejo
         res.status(200).cookie('token', token, options).json({
             message: 'Login successful',
-            // YEH OBJECT FRONTEND KO ZAROORI HAI:
             user: {
                 id: user._id,
                 name: user.fullName,
+                email: user.email,
                 role: user.role,
-                profileType: profileType, // 'student' ya 'teacher' ya 'admin' etc.
+                profileType: profileType,
                 profile: profile
             }
         });
@@ -241,6 +244,63 @@ export const login = async (req, res) => {
         res.status(500).json({ message: "An internal server error occurred." });
     }
 }
+
+
+// ====================== CHANGE PASSWORD (While Logged In) ======================
+export const changePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    // Validation
+    if (!oldPassword || !newPassword) {
+        return res.status(400).json({
+            message: "Please provide both oldPassword and newPassword"
+        });
+    }
+
+    if (newPassword.length < 6) {
+        return res.status(400).json({
+            message: "New password must be at least 6 characters long"
+        });
+    }
+
+    try {
+        // req.user is coming from protect middleware
+        const user = await UserModel.findById(req.user._id).select('+password');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Only allow Students and Teachers to change password via this route
+        if (!['student', 'teacher'].includes(user.role)) {
+            return res.status(403).json({
+                message: "Only students and teachers are allowed to change password"
+            });
+        }
+
+        // Check if old password is correct
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Old password is incorrect" });
+        }
+
+        // Hash new password
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = encryptedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password changed successfully. Please login again with new password."
+        });
+
+    } catch (error) {
+        console.error("Change Password Error:", error);
+        res.status(500).json({ message: "Failed to change password" });
+    }
+};
+
 
 // LOGOUT
 
