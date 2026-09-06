@@ -84,6 +84,10 @@ app.post("/api/setup/register-first-admin", async (req, res) => {
     }
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', service: 'backend' });
+})
+
 // Mount Routers
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);

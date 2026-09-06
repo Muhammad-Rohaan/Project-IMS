@@ -31,6 +31,10 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/quizzes', require('./routes/quizzes'));
 app.use('/api/results', require('./routes/results'));
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', service: 'AI_MCQs_Gen' });
+})
+
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
     console.log(`running on port ${port}`);
