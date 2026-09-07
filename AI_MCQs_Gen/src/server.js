@@ -7,9 +7,9 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173,https://ims-wine-three.vercel.app")
     .split(",")
-    .map(o => o.trim());
+    .map(o => o.trim().replace(/\/$/, ""));
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -31,8 +31,12 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/quizzes', require('./routes/quizzes'));
 app.use('/api/results', require('./routes/results'));
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', service: 'AI_MCQs_Gen' });
+})
+
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
     console.log(`running on port ${port}`);
-    
+
 });
