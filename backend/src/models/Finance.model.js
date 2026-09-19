@@ -2,17 +2,6 @@ import mongoose from "mongoose";
 
 const financeSchema = new mongoose.Schema(
     {
-<<<<<<< HEAD
-        stdId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'StudentProfile',
-            required: true,
-            // unique: true
-        },
-
-    }
-);
-=======
         // ---- Month & Year Identifier ----
         month: {
             type: String,
@@ -113,4 +102,3 @@ const financeSchema = new mongoose.Schema(
 financeSchema.index({ month: 1, year: 1 }, { unique: true });
 
 export default mongoose.model('Finance', financeSchema);
->>>>>>> 87b2158d27f6dc65342bf63d16c93496879a6be3
