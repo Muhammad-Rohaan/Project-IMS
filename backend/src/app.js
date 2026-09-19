@@ -20,6 +20,9 @@ import announcementRoutes from "./routes/announcement.routes.js"
 import { registerStudent } from "./controllers/reception.controller.js";
 import { changeFeeStatusToUnpaid, getAllPendingFees, getAllUnpaidFees, getStudentsFeeData } from "./controllers/fees.controller.js";
 
+import dns from 'dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 dotenv.config();
 
 // dotenv.config({ path: "../.env" });

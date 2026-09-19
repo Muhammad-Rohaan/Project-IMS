@@ -2,6 +2,7 @@ import express from 'express';
 import { protect, authorize } from '../middleware/auth.middleware.js';
 import { register } from '../controllers/auth.controller.js';
 import { deleteTeacherById, fetchAllReceptionists, fetchAllTeachers, fetchTeachersByClass, getAllStds, registerReceptionist, registerTeacher, removeReceptionist, searchTeacherByClassAndSubject, updateTeacher } from '../controllers/admin.controller.js';
+import financeRouter from './finance.routes.js';
 
 
 // Example: import { getDashboardStats, manageUser } from '../controllers/admin.controller.js';
@@ -29,7 +30,7 @@ router.get('/az-teachers/getAllStudents', getAllStds);
 
 
 /**
- * teachers creation in admin 
+ * teachers creation in admin
  * api/admin/...
  */
 
@@ -48,7 +49,6 @@ router.delete('/az-teachers/delete-teacher/:teacherRegId', deleteTeacherById);
 // delete student route...
 
 
-
-router.get('/finances', (req, res) => res.json({ message: 'Financial reports endpoint COMMING SOOOOOOOOOOOON' }));
+router.use('/finance', financeRouter);
 
 export default router;
